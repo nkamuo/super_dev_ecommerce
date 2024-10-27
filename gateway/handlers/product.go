@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"productservice/proto"
 
 	"github.com/superdev/ecommerce/gateway/grpc"
+	"github.com/superdev/ecommerce/gateway/proto"
 )
 
 func ListProducts(w http.ResponseWriter, r *http.Request) {

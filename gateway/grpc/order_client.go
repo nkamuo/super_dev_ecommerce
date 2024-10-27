@@ -3,7 +3,8 @@ package grpc
 
 import (
 	"log"
-	"orderservice/proto" // Replace with actual import path
+
+	"github.com/superdev/ecommerce/gateway/proto" // Replace with actual import path
 
 	"google.golang.org/grpc"
 )
