@@ -17,6 +17,10 @@ message Order {
     float total_price = 3;
 }
 
+message OrderRequest {
+    int32 id = 1;
+}
+
 message CreateOrderRequest {
     repeated OrderItem items = 1;
 }
@@ -32,5 +36,6 @@ message OrderListResponse {
 
 service OrderService {
     rpc CreateOrder(CreateOrderRequest) returns (OrderResponse);
+    rpc GetOrder(OrderRequest) returns (Order);
     rpc ListOrders(Empty) returns (OrderListResponse);
 }

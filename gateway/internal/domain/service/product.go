@@ -1,8 +1,11 @@
 package service
 
+import "github.com/superdev/ecommerce/gateway/internal/domain/entity"
+
 type ProductService interface {
-	// CheckProductAvailability(ctx context.Context, in *CheckProductRequest, opts ...grpc.CallOption) (*CheckProductResponse, error)
-	// GetProduct(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*Product, error)
-	// ListProducts(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ProductListResponse, error)
-	// CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*Product, error)
+	CheckProductAvailability(id string) (*bool, error)
+	GetProduct(id string) (entity.Product, error)
+	Save(entity.Product) (entity.Product, error)
+	ListProducts() ([]entity.Product, error)
+	Delete(product entity.Product) error
 }
