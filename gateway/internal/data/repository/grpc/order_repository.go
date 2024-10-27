@@ -5,20 +5,20 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/superdev/ecommerce/gateway/internal/adapters/grpc/proto"
 	"github.com/superdev/ecommerce/gateway/internal/domain/entity"
 	"github.com/superdev/ecommerce/gateway/internal/domain/repository"
-	"github.com/superdev/ecommerce/gateway/proto"
 	"go.uber.org/zap"
 )
 
 type orderRepository struct {
 	client proto.OrderServiceClient
-	logger *zap.Logger
+	logger zap.Logger
 }
 
 func NewGrpcOrderRepository(
 	client proto.OrderServiceClient,
-	logger *zap.Logger,
+	logger zap.Logger,
 ) repository.OrderRepository {
 	return &orderRepository{
 		client: client,

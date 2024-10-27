@@ -1,10 +1,10 @@
-package transport
+package http
 
 import (
 	"net/http"
 
 	"github.com/spf13/cobra"
-	"github.com/superdev/ecommerce/gateway/command"
+	"github.com/superdev/ecommerce/gateway/internal/command"
 )
 
 func NewHTTPRunCmd(

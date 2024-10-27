@@ -11,12 +11,12 @@ import (
 
 type userRepository struct {
 	db     *gorm.DB
-	logger *zap.Logger
+	logger zap.Logger
 }
 
 func NewGormUserRepository(
 	db *gorm.DB,
-	logger *zap.Logger,
+	logger zap.Logger,
 ) repository.UserRepository {
 	return &userRepository{
 		db:     db,

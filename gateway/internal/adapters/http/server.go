@@ -1,22 +1,21 @@
-package transport
+package http
 
 import (
 	"context"
 	"fmt"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/superdev/ecommerce/gateway/config"
+	"github.com/superdev/ecommerce/gateway/internal/config"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
 func NewHTTPServer(
 	router *gin.Engine,
-	logger *zap.Logger,
 	conf *config.Config,
-	lc fx.Lifecycle,
 ) (*http.Server, error) {
 
 	port := conf.AppPort
@@ -27,8 +26,20 @@ func NewHTTPServer(
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: router,
 	}
+
+	return srv, nil
+}
+
+func NewHTTPServerRunner(
+	logger zap.Logger,
+	lf fx.Lifecycle,
+	srv *http.Server,
+) HttpServerRunner {
+	runner := &httpServerRunner{
+		srv: srv,
+	}
 	// Start the server when the lifecycle starts
-	lc.Append(fx.Hook{
+	lf.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			ln, err := net.Listen("tcp", srv.Addr)
 			if err != nil {
@@ -44,5 +55,27 @@ func NewHTTPServer(
 		},
 	})
 
-	return srv, nil
+	return runner
+}
+
+type HttpServerRunner interface {
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+}
+
+type httpServerRunner struct {
+	srv *http.Server
+}
+
+func (s *httpServerRunner) Start(ctx context.Context) (err error) {
+	go func() {
+		err = s.srv.ListenAndServe()
+	}()
+	time.Sleep(time.Second)
+	return err
+}
+
+func (s *httpServerRunner) Stop(ctx context.Context) (err error) {
+	err = s.srv.Shutdown(ctx)
+	return err
 }

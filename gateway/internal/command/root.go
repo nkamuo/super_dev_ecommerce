@@ -14,14 +14,14 @@ func NewRootCmd(
 	commands []CobraCommand,
 	lc fx.Lifecycle,
 	shutdowner fx.Shutdowner,
-	runner service_runners.ServerCommandRunner,
+	// runner service_runners.ServerCommandRunner,
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "root",
 		Short: "STSX Command-line Interface",
 		Run: func(cmd *cobra.Command, args []string) {
 			// cmd.Help()
-			runner(cmd, context.Background())
+			// runner(cmd, context.Background())
 		},
 	}
 

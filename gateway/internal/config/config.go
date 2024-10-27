@@ -13,7 +13,7 @@ type Config struct {
 func NewConfig() (*Config, error) {
 	viper.SetConfigFile(".env")
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+		// return nil, err
 	}
 	viper.AutomaticEnv()
 

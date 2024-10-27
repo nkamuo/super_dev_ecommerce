@@ -4,20 +4,20 @@ import (
 	"context"
 	"errors"
 
+	"github.com/superdev/ecommerce/gateway/internal/adapters/grpc/proto"
 	"github.com/superdev/ecommerce/gateway/internal/domain/entity"
 	"github.com/superdev/ecommerce/gateway/internal/domain/repository"
-	"github.com/superdev/ecommerce/gateway/proto"
 	"go.uber.org/zap"
 )
 
 type productRepository struct {
 	client proto.ProductServiceClient
-	logger *zap.Logger
+	logger zap.Logger
 }
 
 func NewGrpcProductRepository(
 	client proto.ProductServiceClient,
-	logger *zap.Logger,
+	logger zap.Logger,
 ) repository.ProductRepository {
 	return &productRepository{
 		client: client,

@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/superdev/ecommerce/gateway/config"
+	"github.com/superdev/ecommerce/gateway/internal/config"
 )
 
 type JWTMiddleware struct {

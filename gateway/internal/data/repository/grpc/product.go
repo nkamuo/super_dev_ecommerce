@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/superdev/ecommerce/gateway/internal/adapters/grpc/proto"
 	"github.com/superdev/ecommerce/gateway/internal/domain/entity"
-	"github.com/superdev/ecommerce/gateway/proto"
 )
 
 type GrpcProduct struct {
