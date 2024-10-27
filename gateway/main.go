@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/superdev/ecommerce/gateway/config"
+	"github.com/superdev/ecommerce/gateway/database"
 	"github.com/superdev/ecommerce/gateway/handlers"
 	"github.com/superdev/ecommerce/gateway/middleware"
 
@@ -12,6 +14,13 @@ import (
 )
 
 func main() {
+
+	config.InitConfig()
+	db, err := database.NewDB()
+	if err != nil {
+		panic("Failed to connect to database")
+	}
+
 	r := mux.NewRouter()
 	r.Use(middleware.JwtAuthMiddleware)
 
