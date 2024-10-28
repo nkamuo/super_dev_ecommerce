@@ -11,6 +11,7 @@ import (
 )
 
 type deleteProductHandler struct {
+	handlers.AbstractAdminHandler
 	productService service.ProductService
 }
 

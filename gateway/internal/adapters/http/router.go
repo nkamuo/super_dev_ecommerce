@@ -11,7 +11,7 @@ import (
 
 func NewHTTPRouter(
 	handlers []handlers.Handler,
-	middlewares []middlewares.Middleware,
+	_middlewares []middlewares.Middleware,
 ) (*gin.Engine, error) {
 
 	engine := gin.Default()
@@ -19,7 +19,7 @@ func NewHTTPRouter(
 	secured := engine.Group("/")
 
 	// Add middlewares
-	for _, middleware := range middlewares {
+	for _, middleware := range _middlewares {
 		secured.Use(middleware.Handle())
 	}
 	for _, h := range handlers {
@@ -36,27 +36,32 @@ func NewHTTPRouter(
 			case "GET":
 				secured.GET(
 					h.Pattern(),
+					middlewares.Authenticate(h),
 					h.Handle,
 				)
 			case "PATCH":
 				secured.PATCH(
 					h.Pattern(),
+					middlewares.Authenticate(h),
 					h.Handle,
 				)
 			case "PUT":
 				secured.PUT(
 					h.Pattern(),
+					middlewares.Authenticate(h),
 					h.Handle,
 				)
 
 			case "POST":
 				secured.POST(
 					h.Pattern(),
+					middlewares.Authenticate(h),
 					h.Handle,
 				)
 			case "DELETE":
 				secured.DELETE(
 					h.Pattern(),
+					middlewares.Authenticate(h),
 					h.Handle,
 				)
 			}
@@ -65,6 +70,7 @@ func NewHTTPRouter(
 			secured.Match(
 				h.Methods(),
 				h.Pattern(),
+				middlewares.Authenticate(h),
 				h.Handle,
 			)
 		}

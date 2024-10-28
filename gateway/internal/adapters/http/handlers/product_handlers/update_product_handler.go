@@ -13,6 +13,7 @@ import (
 )
 
 type updateProductHandler struct {
+	handlers.AbstractAdminHandler
 	productService service.ProductService
 }
 

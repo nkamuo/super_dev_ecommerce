@@ -13,6 +13,7 @@ import (
 )
 
 type createOrderHandler struct {
+	handlers.AbstractUserHandler
 	productService service.ProductService
 	orderService   service.OrderService
 }

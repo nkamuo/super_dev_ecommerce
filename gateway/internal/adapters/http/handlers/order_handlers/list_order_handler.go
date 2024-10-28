@@ -11,6 +11,7 @@ import (
 )
 
 type listOrderHandler struct {
+	handlers.AbstractUserHandler
 	orderService service.OrderService
 }
 

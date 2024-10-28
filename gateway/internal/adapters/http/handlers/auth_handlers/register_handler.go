@@ -7,45 +7,50 @@ import (
 	"github.com/gin-gonic/gin"
 	auth_dto "github.com/superdev/ecommerce/gateway/internal/adapters/http/dto/auth"
 	"github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers"
+
 	"github.com/superdev/ecommerce/gateway/internal/application/service"
 	"github.com/superdev/ecommerce/gateway/internal/config"
+	"github.com/superdev/ecommerce/gateway/internal/domain/entity"
 	"github.com/superdev/ecommerce/gateway/internal/domain/repository"
-	"github.com/superdev/ecommerce/gateway/internal/util/auth"
+	_service "github.com/superdev/ecommerce/gateway/internal/domain/service"
 )
 
-type loginAuthhandler struct {
+type registerAuthhandler struct {
 	userRepository  repository.UserRepository
 	passwordService service.PasswordService
+	userservice     _service.UserService
 	conf            *config.Config
 }
 
-func NewLoginAuthHandler(
+func NewRegisterAuthHandler(
+	userservice _service.UserService,
 	userRepository repository.UserRepository,
 	passwordService service.PasswordService,
 	conf *config.Config,
 ) handlers.Handler {
-	return &loginAuthhandler{
+	return &registerAuthhandler{
+		userservice:     userservice,
 		userRepository:  userRepository,
 		passwordService: passwordService,
 		conf:            conf,
 	}
 }
 
-func (h *loginAuthhandler) Roles() *[]string {
+func (h *registerAuthhandler) Roles() *[]string {
 	// return &[]string{"admin", "user"}
 	return nil
 }
 
-func (s *loginAuthhandler) Pattern() string {
-	return "/login"
+func (s *registerAuthhandler) Pattern() string {
+	return "/register"
 }
 
-func (s *loginAuthhandler) Methods() []string {
+func (s *registerAuthhandler) Methods() []string {
 	return []string{"POST"}
 }
 
-func (s *loginAuthhandler) Handle(c *gin.Context) {
-	var req auth_dto.LoginRequest
+func (s *registerAuthhandler) Handle(c *gin.Context) {
+	var req auth_dto.RegisterRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -55,16 +60,7 @@ func (s *loginAuthhandler) Handle(c *gin.Context) {
 		return
 	}
 
-	user, err := s.userRepository.FindByUserName(c, req.Username)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status":  "error",
-			"message": fmt.Sprintf("Invalid username or password"),
-		})
-		return
-	}
-
-	verified, err := s.passwordService.VerifyPassword(req.Password, user.GetHashedPassword())
+	hashedPassword, err := s.passwordService.HashPassword(req.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "error",
@@ -73,23 +69,22 @@ func (s *loginAuthhandler) Handle(c *gin.Context) {
 		return
 	}
 
-	if !verified {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status":  "error",
-			"message": fmt.Sprintf("Invalid username or password"),
-		})
-		return
-	}
+	user := entity.NewEmptyUser()
+	user.SetUserName(req.Username)
+	user.SetHashedPassword(hashedPassword)
 
-	token, err := auth.GenerateToken(user.GetId(), s.conf.JWTConfig)
+	_user, err := s.userservice.Save(user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "error",
+			"message": fmt.Sprintf("Error Creating account: %s", err.Error()),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"token":  token,
+		"data":   _user,
 	})
 
 }

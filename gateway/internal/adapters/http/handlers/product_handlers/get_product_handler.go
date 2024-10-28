@@ -11,6 +11,7 @@ import (
 )
 
 type getProductHandler struct {
+	handlers.AbstractAdminHandler
 	productService service.ProductService
 }
 

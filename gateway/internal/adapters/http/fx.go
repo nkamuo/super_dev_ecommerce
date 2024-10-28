@@ -22,6 +22,9 @@ var Module = fx.Module("http_adapter",
 		/* ---- HANDLERS  ------     */
 		// AUTH
 		handlers.AsHttpHandler(
+			authhandlers.NewRegisterAuthHandler,
+		),
+		handlers.AsHttpHandler(
 			authhandlers.NewLoginAuthHandler,
 		),
 		// PRODUCTS

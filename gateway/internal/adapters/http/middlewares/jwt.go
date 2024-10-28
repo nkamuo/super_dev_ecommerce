@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/superdev/ecommerce/gateway/internal/config"
+	"github.com/superdev/ecommerce/gateway/internal/domain/service"
 )
 
 // Claims represents the JWT claims
@@ -17,14 +18,19 @@ type Claims struct {
 }
 
 type JWTMiddleware struct {
-	JWTSecret string
-	conf      *config.Config
+	JWTSecret   string
+	conf        *config.Config
+	userService service.UserService
 }
 
-func NewJWTMiddleware(conf *config.Config) *JWTMiddleware {
+func NewJWTMiddleware(
+	conf *config.Config,
+	userService service.UserService,
+) *JWTMiddleware {
 	return &JWTMiddleware{
-		JWTSecret: conf.Auth.SigningKey,
-		conf:      conf,
+		JWTSecret:   conf.Auth.SigningKey,
+		conf:        conf,
+		userService: userService,
 	}
 }
 
@@ -60,8 +66,17 @@ func (m *JWTMiddleware) Handle() gin.HandlerFunc {
 			return
 		}
 
-		// Set user ID in context for access in handlers
-		c.Set("userID", claims.UserID)
+		if user, err := m.userService.GetUser(claims.UserID); err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
+			c.Abort()
+			return
+		} else {
+
+			// Set user ID in context for access in handlers
+			c.Set("userID", claims.UserID)
+			c.Set("user", user)
+		}
+
 		c.Next()
 	}
 }
