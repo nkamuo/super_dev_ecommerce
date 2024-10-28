@@ -11,7 +11,6 @@ type OrderItem interface {
 	GetProductId() string
 	GetPrice() int64
 	GetQuantity() int32
-	GetTotal() *uint64
 }
 
 func NewOrder(
