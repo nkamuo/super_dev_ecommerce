@@ -73,10 +73,6 @@ func (us *order) SetCustomerName(cName *string) {
 	us.CustomerName = cName
 }
 
-func (us *order) GetTotal() *uint64 {
-	return us.Total
-}
-
 func (s *order) GetItems() []OrderItem {
 	return s.items
 }
