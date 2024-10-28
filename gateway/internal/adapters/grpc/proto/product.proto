@@ -8,8 +8,10 @@ import "common.proto"; // Import the common proto file to reference Empty messag
 service ProductService {
   rpc CheckProductAvailability (CheckProductRequest) returns (CheckProductResponse);
     rpc GetProduct(ProductRequest) returns (Product);
+    rpc DeleteProduct(DeleteProductRequest) returns (Product);
     rpc ListProducts(Empty) returns (ProductListResponse);
     rpc CreateProduct(CreateProductRequest) returns (Product);
+    rpc UpdateProduct(UpdateProductRequest) returns (Product);
 }
 
 message CheckProductRequest {
@@ -38,9 +40,23 @@ message ProductRequest {
     int32 id = 1;
 }
 
+message DeleteProductRequest {
+    int32 id = 1;
+}
+
 message CreateProductRequest {
     string name = 1;
     string description = 2;
     float price = 3;
     int32 available_quantity = 4;
+}
+
+
+
+message UpdateProductRequest {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+    float price = 4;
+    int32 available_quantity = 5;
 }

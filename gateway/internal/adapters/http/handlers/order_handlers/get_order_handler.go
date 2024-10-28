@@ -5,7 +5,7 @@ import (
 	_http "net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/superdev/ecommerce/gateway/internal/adapters/http"
+	"github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers"
 	"github.com/superdev/ecommerce/gateway/internal/config"
 	"github.com/superdev/ecommerce/gateway/internal/domain/service"
 )
@@ -14,10 +14,10 @@ type getOrderHandler struct {
 	orderService service.OrderService
 }
 
-func NewgetOrderHandler(
+func NewGetOrderHandler(
 	orderService service.OrderService,
 	conf *config.Config,
-) http.Handler {
+) handlers.Handler {
 	return &getOrderHandler{
 		orderService: orderService,
 	}

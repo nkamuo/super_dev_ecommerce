@@ -1,4 +1,4 @@
-package http
+package handlers
 
 import (
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,7 @@ type Handler interface {
 	Methods() []string
 }
 
-func AsHttpRoute(f any, anns ...fx.Annotation) any {
+func AsHttpHandler(f any, anns ...fx.Annotation) any {
 	anns = append(anns,
 		fx.As(new(Handler)),
 		fx.ResultTags(`group:"app.http.handler"`))

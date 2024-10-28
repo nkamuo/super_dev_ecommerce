@@ -2,8 +2,6 @@
 package grpc
 
 import (
-	"fmt"
-
 	"github.com/superdev/ecommerce/gateway/internal/adapters/grpc/proto"
 	"github.com/superdev/ecommerce/gateway/internal/config"
 	"go.uber.org/zap"
@@ -14,10 +12,11 @@ import (
 func NewOrderGrpcClient(
 	conf *config.Config,
 	logger zap.Logger,
-) proto.OrderServiceClient {
-	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
+) (proto.OrderServiceClient, error) {
+	conn, err := grpc.Dial(conf.OrderServiceUrl, grpc.WithInsecure())
 	if err != nil {
-		logger.Error(fmt.Sprintf("Could not connect to Order Service: %v", err))
+		// logger.Error(fmt.Sprintf("Could not connect to Order Service: %v", err))
+		return nil, err
 	}
-	return proto.NewOrderServiceClient(conn)
+	return proto.NewOrderServiceClient(conn), nil
 }

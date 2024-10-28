@@ -6,6 +6,7 @@ RUN apk add --no-cache git
 
 # Set the working directory inside the container
 WORKDIR /app
+# WORKDIR /app/cmd/app
 
 # Copy go.mod and go.sum files to the working directory
 COPY go.mod go.sum ./
@@ -17,7 +18,11 @@ RUN go mod tidy
 COPY . .
 
 # Build the Go application
-RUN go build -o /go/bin/api-gateway
+# RUN go build -o /go/bin/api-gateway
+# RUN go build cmd/app/main.go -o /go/bin/api-gateway
+RUN go build -o /go/bin/api-gateway ./cmd/app
+# RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/bin/command ./cmd/command
+
 
 # Final stage for a smaller runtime image
 FROM alpine:latest

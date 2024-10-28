@@ -5,7 +5,7 @@ import (
 	_http "net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/superdev/ecommerce/gateway/internal/adapters/http"
+	"github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers"
 	"github.com/superdev/ecommerce/gateway/internal/config"
 	"github.com/superdev/ecommerce/gateway/internal/domain/service"
 )
@@ -17,18 +17,18 @@ type listOrderHandler struct {
 func NewListOrderHandler(
 	orderService service.OrderService,
 	conf *config.Config,
-) http.Handler {
+) handlers.Handler {
 	return &listOrderHandler{
 		orderService: orderService,
 	}
 }
 
 func (s *listOrderHandler) Pattern() string {
-	return "/orders/:id"
+	return "/orders"
 }
 
 func (s *listOrderHandler) Methods() []string {
-	return []string{"DELETE"}
+	return []string{"GET"}
 }
 
 func (s *listOrderHandler) Handle(c *gin.Context) {

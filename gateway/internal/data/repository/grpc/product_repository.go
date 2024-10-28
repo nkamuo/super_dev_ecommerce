@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"errors"
 	"strconv"
 
 	"github.com/superdev/ecommerce/gateway/internal/adapters/grpc/proto"
@@ -42,8 +41,17 @@ func (s *productRepository) Create(ctx context.Context, entity entity.Product) (
 }
 
 func (s *productRepository) Delete(ctx context.Context, entity entity.Product) error {
-	return errors.ErrUnsupported
+	// return errors.ErrUnsupported
+	id, err := strconv.ParseUint(entity.GetId(), 10, 32)
+	if err != nil {
+		return err
+	}
+	var req proto.DeleteProductRequest
+	req.Id = int32(id)
+	_, err = s.client.DeleteProduct(context.Background(), &req)
+	return err
 }
+
 func (s *productRepository) FindAll(ctx context.Context) ([]entity.Product, error) {
 	var req proto.Empty
 	res, err := s.client.ListProducts(context.Background(), &req)
@@ -76,9 +84,32 @@ func (s *productRepository) FindById(ctx context.Context, id string) (entity.Pro
 }
 
 func (s *productRepository) CheckProductAvailability(ctx context.Context, id string) (*bool, error) {
-	return nil, errors.ErrUnsupported
+	_id, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+	var req = proto.CheckProductRequest{
+		ProductId: int32(_id),
+	}
+
+	if avialable, err := s.client.CheckProductAvailability(context.Background(), &req); err != nil {
+		return nil, err
+	} else {
+		return &avialable.Available, nil
+	}
 }
 
 func (s *productRepository) Update(ctx context.Context, entity entity.Product) error {
-	return errors.ErrUnsupported
+	var req proto.UpdateProductRequest
+
+	req.AvailableQuantity = int32(entity.GetQuantityAvailable())
+	req.Name = entity.GetName()
+	req.Description = entity.GetDescription()
+	req.Price = float32(entity.GetPrice())
+
+	if _, err := s.client.UpdateProduct(context.Background(), &req); err != nil {
+		return err
+	} else {
+		return nil
+	}
 }

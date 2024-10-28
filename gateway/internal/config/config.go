@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/caarlos0/env/v9"
 	"github.com/spf13/viper"
 )
 
@@ -28,7 +29,8 @@ func NewConfig() (*Config, error) {
 	// }
 
 	var config Config
-	err := viper.Unmarshal(&config)
+	// err := viper.Unmarshal(&config)
+	err := env.Parse(&config)
 
 	return &config, err
 }

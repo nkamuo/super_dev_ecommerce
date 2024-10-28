@@ -47,7 +47,14 @@ func (s *orderRepository) Create(ctx context.Context, entity entity.Order) (enti
 }
 
 func (s *orderRepository) Delete(ctx context.Context, entity entity.Order) error {
-	return errors.ErrUnsupported
+	id, err := strconv.ParseUint(entity.GetId(), 10, 32)
+	if err != nil {
+		return err
+	}
+	var req proto.DeleteOrderRequest
+	req.Id = int32(id)
+	_, err = s.client.DeleteOrder(context.Background(), &req)
+	return err
 }
 func (s *orderRepository) FindAll(ctx context.Context) ([]entity.Order, error) {
 	var req proto.Empty
