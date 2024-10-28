@@ -62,7 +62,7 @@ func (s *orderRepository) FindAll(ctx context.Context) ([]entity.Order, error) {
 	if err != nil {
 		return nil, err
 	}
-	var orders []entity.Order
+	var orders = make([]entity.Order, 0)
 	for _, ord := range res.Orders {
 		order := fromProtoToOrderEntity(ord)
 		orders = append(orders, order)

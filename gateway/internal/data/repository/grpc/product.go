@@ -34,6 +34,7 @@ func (us *GrpcProduct) GetPrice() int64 {
 }
 
 func fromProtoToProductEntity(pProduct *proto.Product) entity.Product {
+	// fmt.Printf("FOUND AVAILABLE QUANTITY: %d\n", pProduct.AvailableQuantity)
 	var product GrpcProduct
 	product.ID = uint64(pProduct.Id)
 	product.Name = pProduct.Name
@@ -47,11 +48,20 @@ func fromProductEntity(product entity.Product) *GrpcProduct {
 	if gProduct, ok := product.(*GrpcProduct); ok {
 		return gProduct
 	} else {
+		gProduct = &GrpcProduct{}
+
 		ID, err := strconv.ParseUint(product.GetId(), 10, 64)
 		if nil != err {
-			panic(err)
+			// panic(err)
+		} else {
+			gProduct.ID = ID
 		}
 		gProduct.ID = ID
+		gProduct.Name = product.GetName()
+		gProduct.Description = product.GetDescription()
+		gProduct.AvailableQuantity = int32(product.GetQuantityAvailable())
+		gProduct.Price = float32(product.GetPrice())
+
 		return gProduct
 	}
 }

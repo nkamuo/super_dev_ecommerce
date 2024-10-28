@@ -19,6 +19,7 @@ services:
       - "50052:50052"
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/super_dev_ecommerce_order_service
+      - PRODUCT_SERVICE_ADDRESS=product-service:50051
     depends_on:
       db:
         condition: service_healthy
@@ -33,6 +34,7 @@ services:
     environment:
       - PRODUCT_SERVICE_ADDRESS=product-service:50051
       - ORDER_SERVICE_ADDRESS=order-service:50052
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/super_dev_ecommerce_api_service
     depends_on:
       - product-service
       - order-service

@@ -16,11 +16,17 @@ func NewHTTPRouter(
 
 	engine := gin.Default()
 
+	secured := engine.Group("/")
+
 	// Add middlewares
 	for _, middleware := range middlewares {
-		engine.Use(middleware.Handle())
+		secured.Use(middleware.Handle())
 	}
 	for _, h := range handlers {
+		if h.Pattern() == "/login" {
+			engine.POST(h.Pattern(), h.Handle)
+			continue
+		}
 		methods := h.Methods()
 		if len(methods) == 0 {
 			return nil, errors.New("found a HTTP handler with empty method(verb) list. Please specify at least one method")
@@ -28,35 +34,35 @@ func NewHTTPRouter(
 			method := methods[0]
 			switch strings.ToUpper(method) {
 			case "GET":
-				engine.GET(
+				secured.GET(
 					h.Pattern(),
 					h.Handle,
 				)
 			case "PATCH":
-				engine.PATCH(
+				secured.PATCH(
 					h.Pattern(),
 					h.Handle,
 				)
 			case "PUT":
-				engine.PUT(
+				secured.PUT(
 					h.Pattern(),
 					h.Handle,
 				)
 
 			case "POST":
-				engine.POST(
+				secured.POST(
 					h.Pattern(),
 					h.Handle,
 				)
 			case "DELETE":
-				engine.DELETE(
+				secured.DELETE(
 					h.Pattern(),
 					h.Handle,
 				)
 			}
 
 		} else {
-			engine.Match(
+			secured.Match(
 				h.Methods(),
 				h.Pattern(),
 				h.Handle,

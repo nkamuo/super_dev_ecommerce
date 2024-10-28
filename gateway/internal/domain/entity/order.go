@@ -2,6 +2,8 @@ package entity
 
 type Order interface {
 	GetId() string
+	GetCustomerId() *uint32
+	GetCustomerName() *string
 	GetItems() []OrderItem
 }
 
@@ -9,6 +11,7 @@ type OrderItem interface {
 	GetProductId() string
 	GetPrice() int64
 	GetQuantity() int32
+	GetTotal() *uint64
 }
 
 func NewOrder(
@@ -39,12 +42,39 @@ func NewEmptyOrderItem() *orderItem {
 }
 
 type order struct {
-	id    string
-	items []OrderItem
+	id           string
+	items        []OrderItem
+	CustomerId   *uint32
+	CustomerName *string
+	Total        *uint64
 }
 
 func (s *order) GetId() string {
 	return s.id
+}
+
+func (us *order) GetTotal() *uint64 {
+	return us.Total
+}
+
+func (us *order) GetCustomerId() *uint32 {
+	return us.CustomerId
+}
+
+func (us *order) GetCustomerName() *string {
+	return us.CustomerName
+}
+
+func (us *order) SetCustomerId(cId *uint32) {
+	us.CustomerId = cId
+}
+
+func (us *order) SetCustomerName(cName *string) {
+	us.CustomerName = cName
+}
+
+func (us *order) GetTotal() *uint64 {
+	return us.Total
 }
 
 func (s *order) GetItems() []OrderItem {

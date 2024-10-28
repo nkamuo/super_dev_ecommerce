@@ -13,7 +13,7 @@ import (
 
 func main() {
 	var app = fx.New(
-		// fx.NopLogger,
+		fx.NopLogger,
 		// --- APP CONFIG
 		config.Module,
 		application.Module,

@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers"
+	authhandlers "github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers/auth_handlers"
 	orderhandlers "github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers/order_handlers"
 	producthandlers "github.com/superdev/ecommerce/gateway/internal/adapters/http/handlers/product_handlers"
 	"github.com/superdev/ecommerce/gateway/internal/adapters/http/middlewares"
@@ -17,7 +18,12 @@ var Module = fx.Module("http_adapter",
 			NewHTTPRouter,
 			fx.ParamTags(`group:"app.http.handler"`, `group:"app.http.middleware"`),
 		),
+
 		/* ---- HANDLERS  ------     */
+		// AUTH
+		handlers.AsHttpHandler(
+			authhandlers.NewLoginAuthHandler,
+		),
 		// PRODUCTS
 		handlers.AsHttpHandler(
 			producthandlers.NewCreateProductHandler,
@@ -48,8 +54,8 @@ var Module = fx.Module("http_adapter",
 			orderhandlers.NewDeleteOrderHandler,
 		),
 		/* ---- MIDDLEWARES ------*/
-		// middlewares.AsHttpMiddleware(
-		middlewares.NewJWTMiddleware,
-		// ),
+		middlewares.AsHttpMiddleware(
+			middlewares.NewJWTMiddleware,
+		),
 	),
 )

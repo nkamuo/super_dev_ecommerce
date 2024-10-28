@@ -1,9 +1,6 @@
 package command
 
 import (
-	"context"
-	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -18,9 +15,9 @@ func NewRootCmd(
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "root",
-		Short: "STSX Command-line Interface",
+		Short: "SuperDev eCommerce Command-line Interface",
 		Run: func(cmd *cobra.Command, args []string) {
-			// cmd.Help()
+			cmd.Help()
 			// runner(cmd, context.Background())
 		},
 	}
@@ -50,16 +47,16 @@ func NewRootCmd(
 		}
 	}
 
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			// log.Debug().Msg("\n Root Command OnStarted LifeCycle Called\n")
-			if err := cmd.Execute(); err != nil {
-				fmt.Fprintf(os.Stderr, "Whoops. There was an error while executing the CLI '%s'", err)
-				shutdowner.Shutdown(fx.ExitCode(1))
-			}
-			shutdowner.Shutdown()
-			return nil
-		},
-	})
+	// lc.Append(fx.Hook{
+	// 	OnStart: func(ctx context.Context) error {
+	// 		// log.Debug().Msg("\n Root Command OnStarted LifeCycle Called\n")
+	// 		if err := cmd.Execute(); err != nil {
+	// 			fmt.Fprintf(os.Stderr, "Whoops. There was an error while executing the CLI '%s'", err)
+	// 			shutdowner.Shutdown(fx.ExitCode(1))
+	// 		}
+	// 		shutdowner.Shutdown()
+	// 		return nil
+	// 	},
+	// })
 	return cmd
 }

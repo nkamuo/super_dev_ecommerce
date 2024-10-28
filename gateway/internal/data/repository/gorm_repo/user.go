@@ -20,9 +20,17 @@ func (us *GormUser) GetId() string {
 func (us *GormUser) GetUserName() string {
 	return us.Username
 }
+func (us *GormUser) GetPassword() string {
+	return "" // return error that saved user cannnot return password
+}
 func (us *GormUser) GetHashedPassword() string {
 	return us.Password
 }
+
+func (us *GormUser) SetHashedPassword(password string) {
+	us.Password = password
+}
+
 func (us *GormUser) GetRole() string {
 	return us.Role
 }
@@ -31,12 +39,14 @@ func fromUserEntity(user entity.User) *GormUser {
 	if gUser, ok := user.(*GormUser); ok {
 		return gUser
 	} else {
+		gUser = &GormUser{}
 		ID, err := strconv.ParseUint(user.GetId(), 10, 64)
 		if nil != err {
-			panic(err)
+			// panic(err)
+		} else {
+			gUser.ID = ID
 		}
 		// gUser := &GormUser{}
-		gUser.ID = ID
 		gUser.Username = user.GetUserName()
 		gUser.Password = user.GetHashedPassword()
 		gUser.Role = user.GetRole()

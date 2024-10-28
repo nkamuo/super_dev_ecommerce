@@ -26,8 +26,8 @@ type productService struct {
 	logger *zap.Logger
 }
 
-func (s *productService) CheckProductAvailability(id string) (*bool, error) {
-	return s.repo.CheckProductAvailability(context.Background(), id)
+func (s *productService) CheckProductAvailability(id string, quantity int64) (*bool, error) {
+	return s.repo.CheckProductAvailability(context.Background(), id, quantity)
 }
 
 func (s *productService) GetProduct(id string) (entity.Product, error) {

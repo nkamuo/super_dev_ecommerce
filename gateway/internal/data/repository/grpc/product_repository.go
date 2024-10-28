@@ -58,7 +58,7 @@ func (s *productRepository) FindAll(ctx context.Context) ([]entity.Product, erro
 	if err != nil {
 		return nil, err
 	}
-	var products []entity.Product
+	var products []entity.Product = make([]entity.Product, 0)
 	for _, ord := range res.Products {
 		product := fromProtoToProductEntity(ord)
 		products = append(products, product)
@@ -83,13 +83,14 @@ func (s *productRepository) FindById(ctx context.Context, id string) (entity.Pro
 	}
 }
 
-func (s *productRepository) CheckProductAvailability(ctx context.Context, id string) (*bool, error) {
+func (s *productRepository) CheckProductAvailability(ctx context.Context, id string, quantity int64) (*bool, error) {
 	_id, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
 	}
 	var req = proto.CheckProductRequest{
 		ProductId: int32(_id),
+		Quantity:  int32(quantity),
 	}
 
 	if avialable, err := s.client.CheckProductAvailability(context.Background(), &req); err != nil {
@@ -101,7 +102,11 @@ func (s *productRepository) CheckProductAvailability(ctx context.Context, id str
 
 func (s *productRepository) Update(ctx context.Context, entity entity.Product) error {
 	var req proto.UpdateProductRequest
-
+	_id, err := strconv.ParseUint(entity.GetId(), 10, 32)
+	if err != nil {
+		return err
+	}
+	req.Id = int32(_id)
 	req.AvailableQuantity = int32(entity.GetQuantityAvailable())
 	req.Name = entity.GetName()
 	req.Description = entity.GetDescription()

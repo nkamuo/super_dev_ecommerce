@@ -8,5 +8,5 @@ import (
 
 type ProductRepository interface {
 	Repository[entity.Product]
-	CheckProductAvailability(ctx context.Context, id string) (*bool, error)
+	CheckProductAvailability(ctx context.Context, id string, quantity int64) (*bool, error)
 }

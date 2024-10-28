@@ -18,6 +18,8 @@ message Order {
     int32 id = 1;
     repeated OrderItem items = 2;
     float total_price = 3;
+    optional int32 customerId = 4;
+    optional string customerName = 5;
 }
 
 message OrderRequest {
@@ -30,6 +32,8 @@ message DeleteOrderRequest {
 
 message CreateOrderRequest {
     repeated OrderItem items = 1;
+    optional int32 customerId = 4;
+    optional string customerName = 5;
 }
 
 message OrderResponse {
